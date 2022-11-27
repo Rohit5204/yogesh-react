@@ -4,9 +4,6 @@ import { Link } from "react-router-dom";
 import axios from 'axios'
 import { useEffect, useState } from "react";
 import {
-    Box,
-    Icon,
-    Chip,
     IconButton,
     Table,
     TableBody,
@@ -20,17 +17,17 @@ const Leads = () => {
     const [LeadData, setLeadData] = useState([])
 
     const fetchLeadData=()=>{
-        axios.get("https://mellow-assorted-chard.glitch.me/leads").then((response) => {
+        axios.get("http://52.66.244.82:3001/leads").then((response) => {
             setLeadData(response.data)
         })
     }
 
     useEffect(() => {
         fetchLeadData()
-    }, [])
+    }, [LeadData])
 
     const deleteData=(id)=>{
-        axios.delete("https://mellow-assorted-chard.glitch.me/leads/"+id).then(fetchLeadData())
+        axios.delete("http://52.66.244.82:3001/leads/"+id).then(fetchLeadData())
     }
 
     return (

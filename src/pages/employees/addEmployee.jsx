@@ -1,11 +1,68 @@
-import { Form, Row, Col, Button, InputGroup,ButtonGroup } from 'react-bootstrap';
-import {
-  InputLabel, MenuItem, FormControl, Select, Icon, Autocomplete, TextField
-} from '@mui/material';
-import { Link } from "react-router-dom";
-function AddEmployee() {
+import { Form,Button, InputGroup, ButtonGroup } from 'react-bootstrap';
+import {FormControl,Autocomplete, TextField} from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Link,useLocation } from "react-router-dom";
+import axios from 'axios'
 
+function AddEmployee() {
+  const location=useLocation()
   const role = ['ADMIN', 'EMPLOYEE']
+  const [EmployeeName, setEmployeeName] = useState('')
+  const [Email, setEmail] = useState('')
+  const [MobileNo, setMobileNo] = useState('')
+  const [DOB, setDOB] = useState('')
+  const [Address, setAddress] = useState('')
+  const [Role, setRole] = useState('')
+
+  useEffect(() => {
+    if (location.state) {
+      setEmployeeName(location.state.name)
+      setEmail(location.state.email)
+      setMobileNo(location.state.mobileno)
+      setAddress(location.state.address)
+      setRole(location.state.role)
+      setDOB(location.state.dob)
+    }
+  }, [])
+
+  const postData = () => {
+    console.log("helo")
+    const employee = {
+      name: EmployeeName,
+      email: Email,
+      mobileno: MobileNo,
+      dob: DOB,
+      address:Address,
+      role: Role
+    }
+    axios.post("http://52.66.244.82:3001/employees", employee)
+  }
+
+  const updateData = () => {
+    const employee = {
+      name: EmployeeName,
+      email: Email,
+      mobileno: MobileNo,
+      address: Address,
+      role: Role,
+      dob:DOB
+    }
+    axios.put("http://52.66.244.82:3001/employees/"+location.state._id,employee)
+  }
+
+  const renderButton = ()=>{
+    if (location.state) {
+      return <Button onClick={updateData} style={{ marginLeft: '780px', backgroundColor: '#fca11a' }}>
+        Update
+      </Button>
+    }
+    else {
+      return <Button onClick={postData} style={{ marginLeft: '780px', backgroundColor: '#fca11a' }}>
+        Submit
+      </Button>
+    }
+    
+  }
 
   return (
     <div>
@@ -13,27 +70,27 @@ function AddEmployee() {
       <Form className="card mr-4" >
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Employee Name</Form.Label>
-          <Form.Control type="text" placeholder="Enter Lead Name" />
+          <Form.Control type="text" placeholder="Enter Employee Name" value={EmployeeName} onChange={(e) => setEmployeeName(e.target.value)} />
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email</Form.Label>
-          <Form.Control type="email" placeholder="Enter Email" />
+          <Form.Control type="email" placeholder="Enter Email" value={Email} onChange={(e) => setEmail(e.target.value)} />
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Date of Birth</Form.Label>
-          <Form.Control type="date" placeholder="Enter Date Of Birth" />
+          <Form.Control type="date" placeholder="Enter Date Of Birth" value={DOB} onChange={(e) => setDOB(e.target.value)} />
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Mobile No.</Form.Label>
-          <Form.Control type="text" placeholder="Enter Mobile No." />
+          <Form.Control type="text" placeholder="Enter Mobile No." value={MobileNo} onChange={(e) => setMobileNo(e.target.value)} />
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Address</Form.Label>
-          <Form.Control as="textarea" rows={5} placeholder="Enter Address" />
+          <Form.Control as="textarea" rows={5} placeholder="Enter Address" value={Address} onChange={(e) => setAddress(e.target.value)} />
         </Form.Group>
 
         <InputGroup className="mb-2">
@@ -47,8 +104,9 @@ function AddEmployee() {
             autoComplete
             autoHighlight
             options={role}
+            value={Role} 
+            onChange={(e) => setRole(e.currentTarget.innerHTML)}
             renderInput={(params) => (
-
               <TextField
                 {...params}
                 variant="outlined"
@@ -61,16 +119,13 @@ function AddEmployee() {
       </Form>
       <ButtonGroup className='mb-5'>
         <Link to={'/employees'}>
-          <Button style={{ marginLeft: '780px', backgroundColor: '#fca11a' }}>
-            Submit
-          </Button>
-          
+          {renderButton()}
         </Link>
         <Link to={'/employees'}>
-      <Button style={{marginLeft: '12px', backgroundColor: '#fca11a' }}>
+          <Button style={{ marginLeft: '12px', backgroundColor: '#fca11a' }}>
             Cancel
           </Button>
-      </Link>
+        </Link>
       </ButtonGroup>
     </div>
   );

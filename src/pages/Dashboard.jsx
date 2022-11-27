@@ -7,18 +7,26 @@ import statusCards from '../jsonData/card.json'
 import axios from 'axios';
 export default function MultiActionAreaCard() {
   const [LeadData, setLeadData] = useState([])
+  const [EmployeeData,setEmployeeData]=useState([])
   const [cardData, setCardData] = useState([])
 
   const fetchLeadData = () => {
-    axios.get("https://mellow-assorted-chard.glitch.me/leads").then((response) => {
+    axios.get("http://52.66.244.82:3001/leads").then((response) => {
       setLeadData(response.data)
+    })
+  }
+
+  const fetchEmploeeData=()=>{
+    axios.get("http://52.66.244.82:3001/employees").then((response) => {
+      setEmployeeData(response.data)
     })
   }
 
   useEffect(() => {
     fetchLeadData()
+    fetchEmploeeData()
     createCardData()
-  }, [LeadData])
+  }, [LeadData,EmployeeData])
 
   const createCardData = () => {
     var card = [{
@@ -27,12 +35,12 @@ export default function MultiActionAreaCard() {
       title: 'Total Leads'
     }, {
       icon: "bx bxs-user-account",
-      count: "05",
+      count: EmployeeData.length,
       title: "Employees"
     },
     {
       icon: "bx bxs-cog",
-      count: "2,632",
+      count: "20",
       title: "Total Services"
     },
     {
@@ -46,10 +54,10 @@ export default function MultiActionAreaCard() {
   const chartOptions = {
     series: [{
       name: 'Customers',
-      data: [40, 70, 25, 90, 36, 80, 30, 91, 60]
+      data: [40, 70, 20, 90, 36, 80, 30, 91, 60]
     }, {
       name: 'Leads',
-      data: [40, 30, 75, 80, 40, 16, 40, 20, 51]
+      data: [40, 30, 70, 80, 40, 16, 40, 20, 51]
     }],
     options: {
       color: ['#6ab04c', '#2980b9'],

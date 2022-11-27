@@ -51,7 +51,7 @@ const Sidebar = () => {
         if(path=='addEmployee'){
             activeItem=2
         }
-        if(path=='addRole'){
+        if(path=='addRoles'){
             activeItem=3
         }
         return activeItem

@@ -30,7 +30,7 @@ function AddLead() {
       address: Address,
       status: Status
     }
-    axios.post("https://mellow-assorted-chard.glitch.me/leads", lead)
+    axios.post("http://52.66.244.82:3001/leads", lead)
   }
 
   const updateData = () => {
@@ -41,7 +41,7 @@ function AddLead() {
       address: Address,
       status: Status
     }
-    axios.put("https://mellow-assorted-chard.glitch.me/leads/"+location.state._id,lead)
+    axios.put("http://52.66.244.82:3001/leads/"+location.state._id,lead)
   }
 
   const renderButton = ()=>{

@@ -1,54 +1,73 @@
-import Table from "../../components/table/table"
 import { Button } from "react-bootstrap"
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import axios from 'axios'
+import {
+    IconButton,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+} from '@mui/material';
 
 const Employee = () => {
-    const navigate = useNavigate();
-    const handleSubmit = () => {
-        navigate('/pages/leads/addLeads');
+    const [EmployeeData, setEmployeeData] = useState([])
+
+    const fetchLeadData=()=>{
+        axios.get("http://52.66.244.82:3001/employees").then((response) => {
+            setEmployeeData(response.data)
+        })
     }
-    const Employee = {
-        head: [
-            'Name',
-            'Mobile No',
-            'Email',
-            'Date of Birth',
-            'Role'
-        ],
-        body: [
-            {
-                'name': 'enquiry for crm',
-                'mobileno': '8765789042',
-                'email': 'yogesh@gmail.com',
-                'dob':'2022-09-14',
-                'role':'ADMIN'
-            }
-        ]
+
+    useEffect(() => {
+        fetchLeadData()
+    }, [EmployeeData])
+
+    const deleteData=(id)=>{
+        axios.delete("http://52.66.244.82:3001/employees/"+id).then(fetchLeadData())
     }
-    const renderEmployeeHead = (item, index) => (
-        <th key={index}>{item}</th>
-    )
-    const renderEmployeeBody = (item, index) => (
-        <tr key={index}>
-            <td>{item.name}</td>
-            <td>{item.mobileno}</td>
-            <td>{item.email}</td>
-            <td>{item.dob}</td>
-            <td>{item.role}</td>
-        </tr>
-    )
+    
     return (
         <div className="mr-5">
             <h2 className="page-header ml-2"><i className='bx bxs-user-account mr-2 mt-1'></i>Employees</h2>
             <div className="card">
                 <div className="card__body ">
-                    <Table
-                        headData={Employee.head}
-                        renderHead={(item, index) => renderEmployeeHead(item, index)}
-                        bodyData={Employee.body}
-                        renderBody={(item, index) => renderEmployeeBody(item, index)}
-                    />
+                <Table className="table-wrapper">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Name</TableCell>
+                                <TableCell>Mobile No</TableCell>
+                                <TableCell>Email</TableCell>
+                                <TableCell>DOB</TableCell>
+                                <TableCell>Role</TableCell>
+                                <TableCell>Action</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {EmployeeData.map((item, index) => {
+                                return (
+                                    <TableRow key={index}>
+                                        <TableCell>{item.name}</TableCell>
+                                        <TableCell>{item.mobileno}</TableCell>
+                                        <TableCell>{item.email}</TableCell>
+                                        <TableCell>{item.dob}</TableCell>
+                                        <TableCell>{item.role}</TableCell>
+                                        <TableCell>
+                                            <Link to={'/addEmployee'} state={item}>
+                                                <IconButton>
+                                                    <i style={{color:'green'}} className="bx bxs-edit" />
+                                                </IconButton>
+                                            </Link>
+                                            <IconButton onClick={()=>deleteData(item._id)}>
+                                                <i style={{color:'red'}} className="bx bxs-trash" />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                )
+                            })}
+                        </TableBody>
+                    </Table>
                 </div>
             </div>
                 <Link to={'/addEmployee'}>
